@@ -1,5 +1,5 @@
-#include "stdio.h"
-#include "print.h"
+#include "include/stdio.h"
+#include "include/print.h"
 
 void putc(char c) {
     x86_video_writeCharTeletype(c, 0);

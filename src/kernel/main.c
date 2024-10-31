@@ -1,5 +1,5 @@
-#include "stdint.h"
-#include "stdio.h"
+#include "include/stdint.h"
+#include "include/stdio.h"
 
 void _cdecl cstart_() {
     puts("Hello world from C!");
