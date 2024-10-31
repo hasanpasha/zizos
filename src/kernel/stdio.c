@@ -21,13 +21,13 @@ void puts_f(const char __far* str) {
     }
 }
 
-
 void _cdecl printf(const char* fmt, ...) {
     int* argp = (int*) &fmt;
     int state = PRINTF_STATE_START;
     int length = PRINTF_LENGTH_START;
     int radix = 10;
     bool sign = false;
+    bool upper = false;
 
     argp++;
     while (*fmt != 0) {
@@ -117,29 +117,39 @@ void _cdecl printf(const char* fmt, ...) {
                 case 'i':
                     radix = 10;
                     sign = true;
-                    argp = printf_number(argp, length, sign, radix);
+                    upper = false;
+                    argp = printf_number(argp, length, sign, radix, upper);
                     break;
                 case 'u':
                     radix = 10;
                     sign = false;
-                    argp = printf_number(argp, length, sign, radix);
+                    upper = false;
+                    argp = printf_number(argp, length, sign, radix, upper);
                     break;
                 case 'x':
-                case 'X':
                 case 'p':
                     radix = 16;
                     sign = false;
-                    argp = printf_number(argp, length, sign, radix);
+                    upper = false;
+                    argp = printf_number(argp, length, sign, radix, upper);
+                    break;
+                case 'X':
+                    radix = 16;
+                    sign = false;
+                    upper = true;
+                    argp = printf_number(argp, length, sign, radix, upper);
                     break;
                 case 'o':
                     radix = 8;
                     sign = false;
-                    argp = printf_number(argp, length, sign, radix);
+                    upper = false;
+                    argp = printf_number(argp, length, sign, radix, upper);
                     break;
                 case 'b':
                     radix = 2;
                     sign = false;
-                    argp = printf_number(argp, length, sign, radix);
+                    upper = false;
+                    argp = printf_number(argp, length, sign, radix, upper);
                     break;
                 default:
                     break;
@@ -148,6 +158,7 @@ void _cdecl printf(const char* fmt, ...) {
             length = PRINTF_LENGTH_START;
             radix = 10;
             sign = false;
+            upper = false;
             break;
         }
         fmt++;
@@ -157,7 +168,7 @@ void _cdecl printf(const char* fmt, ...) {
 
 
 const char possible_chars[] = "0123456789abcdef";
-int* printf_number(int* argp, int length, bool sign, int radix) {
+int* printf_number(int* argp, int length, bool sign, int radix, bool upper) {
     char buffer[32];
     unsigned long long number;
     int number_sign = 1;
@@ -219,8 +230,20 @@ int* printf_number(int* argp, int length, bool sign, int radix) {
     }
 
     while (--pos >= 0) {
-        putc(buffer[pos]);
+        char c = buffer[pos];
+        if (upper) {
+            c = toupper(c);
+        }
+        putc(c);
     }
 
     return argp;
+}
+
+bool islower(char c) {
+    return (c >= 0x61 && c <= 0x7a);
+}
+
+char toupper(char c) {
+    return islower(c) ? c - 'a' + 'A' : c;
 }

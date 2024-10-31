@@ -33,7 +33,7 @@ $(BUILD_DIR)/boot.bin: $(SRC_DIR)/bootloader/boot.asm
 # Kernel
 #
 kernel: $(BUILD_DIR)/kernel.bin
-$(BUILD_DIR)/kernel.bin: main.o print.o c_main.o stdio.o
+$(BUILD_DIR)/kernel.bin: main.o print.o c_main.o stdio.o # sprintf.o
 	$(LD16) NAME $@ FILE \{$(KERNEL_BUILD_DIR)/asm/main.o $(KERNEL_BUILD_DIR)/asm/print.o $(KERNEL_BUILD_DIR)/c/main.o $(KERNEL_BUILD_DIR)/c/stdio.o \} OPTION MAP=$(BUILD_DIR)/kernel.map @$(SRC_DIR)/kernel/linker.lnk
 
 
@@ -52,6 +52,10 @@ $(KERNEL_BUILD_DIR)/c/main.o: $(SRC_DIR)/kernel/main.c
 stdio.o: $(KERNEL_BUILD_DIR)/c/stdio.o
 $(KERNEL_BUILD_DIR)/c/stdio.o: $(SRC_DIR)/kernel/stdio.c
 	$(CC16) $(CFLAGS16) -fo=$@ $^
+
+# sprintf.o: $(KERNEL_BUILD_DIR)/c/sprintf.o
+# $(KERNEL_BUILD_DIR)/c/sprintf.o: $(SRC_DIR)/kernel/sprintf.c
+# 	$(CC16) $(CFLAGS16) -fo=$@ $^
 
 always:
 	mkdir -p $(BUILD_DIR)

@@ -7,7 +7,9 @@ void putc(char c);
 void puts(const char* str);
 void _cdecl printf(const char* fmt, ...);
 void puts_f(const char __far* str);
-int* printf_number(int* argp, int length, bool sign, int radix);
+int* printf_number(int* argp, int length, bool sign, int radix, bool upper);
+bool islower(char c);
+char toupper(char c);
 
 #define PRINTF_STATE_START 0
 #define PRINTF_STATE_LENGTH 1
